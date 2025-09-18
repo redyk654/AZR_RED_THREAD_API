@@ -1,0 +1,54 @@
+# --- Build results ---
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+
+# --- IDE / éditeurs ---
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# --- NuGet packages (se restaurent automatiquement) ---
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+
+# --- Assemblies / binaires ---
+*.dll
+*.exe
+
+# --- Test results ---
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# --- Logs & temporaires ---
+*.tmp
+*.temp
+*.bak
+*.cache
+*.log
+
+# --- Auto-generated ---
+Generated\ Files/
+
+# --- Publish outputs ---
+publish/
+*.publish.xml
+
+# --- Configs locales (ne pas exposer secrets) ---
+appsettings.Development.json
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
