@@ -33,5 +33,6 @@ namespace AZR_RED_THREAD_DAL.DTOs.ProjectDto
             if (now > EndDate) return "Terminé";
             return "En cours";
         }
+    }
 }
 
