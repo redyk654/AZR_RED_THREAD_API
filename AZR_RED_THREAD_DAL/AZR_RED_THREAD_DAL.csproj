@@ -18,4 +18,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Migrations\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>
