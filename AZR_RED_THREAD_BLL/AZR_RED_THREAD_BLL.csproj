@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AZR_RED_THREAD_DAL\AZR_RED_THREAD_DAL.csproj" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\AZR_RED_THREAD_DAL\AZR_RED_THREAD_DAL.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,10 +1,9 @@
-﻿// AZR_RED_THREAD_DAL/Services/ProjectDAServices.cs
-using AZR_RED_THREAD_DAL.Models.Data;
+﻿using AZR_RED_THREAD_DAL.Models.Data;
 using AZR_RED_THREAD_DAL.Models.Project;
 using AZR_RED_THREAD_DAL.Services.ProjectDAServices;
 using Microsoft.EntityFrameworkCore;
 
-namespace AZR_RED_THREAD_DAL.Services
+namespace AZR_RED_THREAD_DAL.Services.ProjectDAServices
 {
     public class ProjectDAServices : IProjectDAServices
     {

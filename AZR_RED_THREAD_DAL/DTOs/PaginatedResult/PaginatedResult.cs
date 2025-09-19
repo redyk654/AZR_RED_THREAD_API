@@ -15,5 +15,10 @@ namespace AZR_RED_THREAD_DAL.DTOs.PaginatedResult
         public int TotalPages => (int)Math.Ceiling((double)Total / PageSize);
         public bool HasPrevious => Page > 1;
         public bool HasNext => Page < TotalPages;
+
+        internal void Deconstruct(out object projects, out object total)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
