@@ -1,8 +1,8 @@
 ﻿// AZR_RED_THREAD_BLL/Profiles/ProjectProfile.cs
 using AutoMapper;
-using AZR_RED_THREAD_DAL.DTOs.CreateProjectDto;
-using AZR_RED_THREAD_DAL.DTOs.ProjectDto;
-using AZR_RED_THREAD_DAL.DTOs.UpdateProjectDto;
+using AZR_RED_THREAD_BLL.DTOs.CreateProjectDto;
+using AZR_RED_THREAD_BLL.DTOs.ProjectDto;
+using AZR_RED_THREAD_BLL.DTOs.UpdateProjectDto;
 using AZR_RED_THREAD_DAL.Models.Project;
 
 namespace AZR_RED_THREAD_BLL.Profiles

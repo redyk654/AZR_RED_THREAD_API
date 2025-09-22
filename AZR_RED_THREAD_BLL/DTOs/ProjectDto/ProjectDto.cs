@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AZR_RED_THREAD_DAL.DTOs.ProjectDto
+namespace AZR_RED_THREAD_BLL.DTOs.ProjectDto
 {
     /// <summary>
     /// DTO utilisé pour renvoyer les projets au client (lecture seule).
@@ -20,6 +20,7 @@ namespace AZR_RED_THREAD_DAL.DTOs.ProjectDto
         public DateTime? UpdatedAt { get; set; }
         public int CreatedBy { get; set; }
         public int? UpdatedBy { get; set; }
+        public bool IsActive { get; set; }
 
         // Propriétés calculées
         public int DurationInDays => (EndDate - StartDate).Days;

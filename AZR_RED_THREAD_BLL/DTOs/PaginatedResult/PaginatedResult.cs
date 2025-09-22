@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AZR_RED_THREAD_DAL.DTOs.PaginatedResult
+namespace AZR_RED_THREAD_BLL.DTOs.PaginatedResult
 {
     public class PaginatedResult<T>
     {
