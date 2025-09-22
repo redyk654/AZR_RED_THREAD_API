@@ -66,7 +66,7 @@ namespace AZR_RED_THREAD_BLL.Services.ProjectServices
             }
 
             // Validation métier : dates cohérentes
-            if (createProjectDto.StartDate >= createProjectDto.EndDate)
+            if (createProjectDto.StartDate > createProjectDto.EndDate)
             {
                 throw new InvalidOperationException("La date de fin doit être postérieure à la date de début.");
             }

@@ -26,7 +26,7 @@ namespace AZR_RED_THREAD_BLL.DTOs.CreateProjectDto
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (StartDate >= EndDate)
+            if (StartDate > EndDate)
             {
                 yield return new ValidationResult(
                     "La date de fin doit être postérieure à la date de début",
