@@ -47,7 +47,7 @@ namespace AZR_RED_THREAD_DAL.Models.Data
                 {
                     // Pour les migrations, tu peux mettre une chaîne de connexion temporaire ici :
                     optionsBuilder.UseSqlServer(
-                        "Server=localhost\\SQLEXPRESS;Database=AZR_RED_THREAD_DB;Trusted_Connection=True;TrustServerCertificate=True;",
+                        "Server=localhost\\SQLEXPRESS;Database=AZR_RED_THREAD_DB;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True;",
                         builder => builder.MigrationsAssembly("AZR_RED_THREAD_DAL"));
                     return;
                 }
