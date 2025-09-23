@@ -35,6 +35,30 @@ namespace AZR_RED_THREAD_API.Controllers
             return Ok(new { data = result.Data, total = result.Total, page, pageSize });
         }
 
+        // GET api/tasks/projectId?projectId=123
+        [HttpGet("projectId")]
+        public async Task<IActionResult> GetAll([FromQuery] int? projectId = null)
+        {
+            try
+            {
+                if (projectId.HasValue)
+                {
+                    // Retourne uniquement les tâches liées au projet demandé
+                    var tasks = await _taskServices.GetTasksByProjectIdAsync(projectId.Value);
+                    return Ok(tasks); // renvoie une liste de TaskDto
+                }
+
+                // Sinon retourne toutes les tâches
+                var all = await _taskServices.GetAllTasksAsync();
+                return Ok(all);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erreur lors de la récupération des tâches");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
         // GET api/tasks/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)

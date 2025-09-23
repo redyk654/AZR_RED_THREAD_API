@@ -53,6 +53,15 @@ namespace AZR_RED_THREAD_DAL.Services.TaskDAServices
                 .FirstOrDefaultAsync(t => t.Id == id && t.IsActive);
         }
 
+        // Récupère toutes les tâches actives liées au projectId, triées par création descendante.
+        public async Task<IEnumerable<TaskEntity>> GetTasksByProjectIdAsync(int projectId)
+        {
+            return await _context.Tasks
+                .Where(t => t.IsActive && t.ProjectId == projectId)
+                .OrderByDescending(t => t.CreatedAt)
+                .ToListAsync();
+        }
+
         // Crée une tâche
         public async Task<TaskEntity> CreateTaskAsync(TaskEntity task)
         {

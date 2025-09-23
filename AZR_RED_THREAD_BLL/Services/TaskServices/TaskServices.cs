@@ -46,6 +46,15 @@ namespace AZR_RED_THREAD_BLL.Services.TaskServices
             return _mapper.Map<TaskDto>(entity);
         }
 
+        public async Task<IEnumerable<TaskDto>> GetTasksByProjectIdAsync(int projectId)
+        {
+            // Appel DAL -> map vers DTO
+            var entities = await _taskDA.GetTasksByProjectIdAsync(projectId);
+            var dtos = _mapper.Map<IEnumerable<TaskDto>>(entities);
+            return dtos;
+        }
+
+
         public async Task<TaskDto> CreateTaskAsync(CreateTaskDto dto)
         {
             // Règle métier: le projet doit exister et être actif

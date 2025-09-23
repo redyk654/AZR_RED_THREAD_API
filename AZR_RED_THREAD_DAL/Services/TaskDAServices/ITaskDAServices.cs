@@ -13,6 +13,7 @@ namespace AZR_RED_THREAD_DAL.Services.TaskDAServices
         Task<IEnumerable<TaskEntity>> GetAllTasksAsync();
         Task<(IEnumerable<TaskEntity> Tasks, int Total)> GetPaginatedTasksAsync(int page, int pageSize);
         Task<TaskEntity?> GetTaskByIdAsync(int id);
+        Task<IEnumerable<TaskEntity>> GetTasksByProjectIdAsync(int projectId);
         Task<TaskEntity> CreateTaskAsync(TaskEntity task);
         Task<TaskEntity> UpdateTaskAsync(TaskEntity task);
         Task<bool> DeleteTaskAsync(int id); // soft delete
