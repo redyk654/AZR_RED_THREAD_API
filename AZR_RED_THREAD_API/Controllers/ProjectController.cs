@@ -1,5 +1,6 @@
 ﻿using AZR_RED_THREAD_BLL.DTOs;
 using AZR_RED_THREAD_BLL.Services.ProjectServices;
+using AZR_RED_THREAD_BLL.Services.UserServices;
 using AZR_RED_THREAD_BLL.DTOs.CreateProjectDto;
 using AZR_RED_THREAD_BLL.DTOs.PaginatedResult;
 using AZR_RED_THREAD_BLL.DTOs.ProjectDto;
@@ -15,11 +16,13 @@ namespace AZR_RED_THREAD_API.Controllers
     public class ProjectController : ControllerBase
     {
         private readonly IProjectServices _projectServices;
+        private readonly IUserServices _userServices;
         private readonly ILogger<ProjectController> _logger;
 
-        public ProjectController(IProjectServices projectServices, ILogger<ProjectController> logger)
+        public ProjectController(IProjectServices projectServices, IUserServices userServices, ILogger<ProjectController> logger)
         {
             _projectServices = projectServices;
+            _userServices = userServices;
             _logger = logger;
         }
 
@@ -51,8 +54,9 @@ namespace AZR_RED_THREAD_API.Controllers
         {
             try
             {
-                var result = await _projectServices.GetPaginatedProjectsAsync(page, pageSize);
-                return Ok(result);
+                var (userId, isAdmin) = await ResolveCurrentUserAsync();
+                var result = await _projectServices.GetPaginatedProjectsAsync(page, pageSize, userId, isAdmin);
+                return Ok(new { data = result.Data, total = result.Total, page, pageSize });
             }
             catch (Exception ex)
             {
@@ -142,7 +146,7 @@ namespace AZR_RED_THREAD_API.Controllers
                 // Récupérer l'ID utilisateur depuis le token JWT
                 updateProjectDto.UpdatedBy = GetCurrentUserId();
 
-                var updatedProject = await _projectServices.UpdateProjectAsync(updateProjectDto);
+                var updatedProject = await _projectServices.UpdateProjectAsync(updateProjectDto, GetCurrentUserId(), User.IsInRole("Admin"));
 
                 _logger.LogInformation("Projet mis à jour avec succès: {ProjectId} par utilisateur {UserId}",
                     id, GetCurrentUserId());
@@ -169,7 +173,7 @@ namespace AZR_RED_THREAD_API.Controllers
         {
             try
             {
-                var result = await _projectServices.DeleteProjectAsync(id);
+                var result = await _projectServices.DeleteProjectAsync(id, GetCurrentUserId(), User.IsInRole("Admin"));
 
                 if (!result)
                 {
@@ -209,5 +213,40 @@ namespace AZR_RED_THREAD_API.Controllers
 
             return userId;
         }
+
+        private async Task<(int? userId, bool isAdmin)> ResolveCurrentUserAsync()
+        {
+            // try claim
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (int.TryParse(userIdClaim, out int uid))
+            {
+                var admin = await _userServices.IsUserAdminAsync(uid);
+                return (uid, admin);
+            }
+
+            // try fake header X-Fake-UserId
+            if (Request.Headers.TryGetValue("X-Fake-UserId", out var fakeIdHdr))
+            {
+                if (int.TryParse(fakeIdHdr.ToString(), out int fid))
+                {
+                    var admin = await _userServices.IsUserAdminAsync(fid);
+                    return (fid, admin);
+                }
+            }
+
+            // try fake m365uuid
+            if (Request.Headers.TryGetValue("X-Fake-M365UUID", out var uuidHdr))
+            {
+                var userDto = await _userServices.GetByM365UUIDAsync(uuidHdr);
+                if (userDto != null)
+                {
+                    var admin = await _userServices.IsUserAdminAsync(userDto.Id);
+                    return (userDto.Id, admin);
+                }
+            }
+
+            return (null, false);
+        }
+
     }
 }

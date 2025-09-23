@@ -30,25 +30,23 @@ namespace AZR_RED_THREAD_BLL.Services.ProjectServices
             return _mapper.Map<IEnumerable<ProjectDto>>(projects);
         }
 
-        public async Task<PaginatedResult<ProjectDto>> GetPaginatedProjectsAsync(int page, int pageSize)
+        public async Task<(IEnumerable<ProjectDto> Data, int Total)> GetPaginatedProjectsAsync(int page, int pageSize, int? currentUserId = null, bool isAdmin = false)
         {
-            // Validation des paramètres
-            if (page < 1) page = 1;
-            if (pageSize < 1) pageSize = 6;
-            if (pageSize > 100) pageSize = 100; // Limite max
-
-            var (projects, total) = await _projectDAServices.GetPaginatedProjectsAsync(page, pageSize);
-            var projectDtos = _mapper.Map<IEnumerable<ProjectDto>>(projects);
-
-            return new PaginatedResult<ProjectDto>
+            if (isAdmin)
             {
-                Data = projectDtos,
-                Total = total,
-                Page = page,
-                PageSize = pageSize
-            };
-        }
+                var (entities, total) = await _projectDAServices.GetPaginatedProjectsAsync(page, pageSize);
+                return (_mapper.Map<IEnumerable<ProjectDto>>(entities), total);
+            }
 
+            if (currentUserId.HasValue)
+            {
+                var (entities, total) = await _projectDAServices.GetPaginatedProjectsByUserAsync(page, pageSize, currentUserId.Value);
+                return (_mapper.Map<IEnumerable<ProjectDto>>(entities), total);
+            }
+
+            // if no user provided and not admin -> return empty
+            return (Enumerable.Empty<ProjectDto>(), 0);
+        }
         public async Task<ProjectDto?> GetProjectByIdAsync(int id)
         {
             if (id <= 0) return null;
@@ -77,46 +75,34 @@ namespace AZR_RED_THREAD_BLL.Services.ProjectServices
             return _mapper.Map<ProjectDto>(createdProject);
         }
 
-        public async Task<ProjectDto> UpdateProjectAsync(UpdateProjectDto updateProjectDto)
+        public async Task<ProjectDto> UpdateProjectAsync(UpdateProjectDto dto, int currentUserId, bool isAdmin)
         {
-            // Vérification existence
-            var existingProject = await _projectDAServices.GetProjectByIdAsync(updateProjectDto.Id);
-            if (existingProject == null)
-            {
-                throw new InvalidOperationException($"Le projet avec l'ID {updateProjectDto.Id} n'existe pas.");
-            }
+            var existing = await _projectDAServices.GetProjectByIdAsync(dto.Id);
+            if (existing == null) throw new InvalidOperationException("Projet introuvable.");
 
-            // Validation métier : nom unique (exclure le projet actuel)
-            if (await _projectDAServices.ProjectNameExistsAsync(updateProjectDto.Name, updateProjectDto.Id))
-            {
-                throw new InvalidOperationException($"Un autre projet avec le nom '{updateProjectDto.Name}' existe déjà.");
-            }
+            // Only creator or admin can update
+            if (!isAdmin && existing.CreatedBy != currentUserId)
+                throw new InvalidOperationException("Vous n'êtes pas autorisé à modifier ce projet.");
 
-            // Validation métier : dates cohérentes
-            if (updateProjectDto.StartDate >= updateProjectDto.EndDate)
-            {
-                throw new InvalidOperationException("La date de fin doit être postérieure à la date de début.");
-            }
+            // business validations...
+            existing.Name = dto.Name;
+            existing.Description = dto.Description;
+            existing.StartDate = dto.StartDate;
+            existing.EndDate = dto.EndDate;
+            existing.UpdatedAt = DateTime.Now;
+            existing.UpdatedBy = dto.UpdatedBy;
 
-            // Mise à jour des propriétés
-            _mapper.Map(updateProjectDto, existingProject);
-
-            var updatedProject = await _projectDAServices.UpdateProjectAsync(existingProject);
-            return _mapper.Map<ProjectDto>(updatedProject);
+            var updated = await _projectDAServices.UpdateProjectAsync(existing);
+            return _mapper.Map<ProjectDto>(updated);
         }
 
-        public async Task<bool> DeleteProjectAsync(int id)
+        public async Task<bool> DeleteProjectAsync(int id, int currentUserId, bool isAdmin)
         {
-            if (id <= 0) return false;
+            var existing = await _projectDAServices.GetProjectByIdAsync(id);
+            if (existing == null) return false;
 
-            // Vérification existence
-            if (!await _projectDAServices.ProjectExistsAsync(id))
-            {
-                throw new InvalidOperationException($"Le projet avec l'ID {id} n'existe pas.");
-            }
-
-            // TODO: Vérifier si le projet a des tâches associées
-            // Dans ce cas, on pourrait empêcher la suppression ou supprimer en cascade
+            if (!isAdmin && existing.CreatedBy != currentUserId)
+                throw new InvalidOperationException("Vous n'êtes pas autorisé à supprimer ce projet.");
 
             return await _projectDAServices.DeleteProjectAsync(id);
         }

@@ -2,6 +2,8 @@ using AZR_RED_THREAD_BLL.Profiles;
 using AZR_RED_THREAD_BLL.Services.ProjectServices;
 using AZR_RED_THREAD_DAL.Models.Data;
 using AZR_RED_THREAD_DAL.Services;
+using AZR_RED_THREAD_DAL.Services.UserDAServices;
+using AZR_RED_THREAD_BLL.Services.UserServices;
 using AZR_RED_THREAD_DAL.Services.ProjectDAServices;
 using AZR_RED_THREAD_BLL.Services.TaskServices;
 using AZR_RED_THREAD_DAL.Services.TaskDAServices;
@@ -31,6 +33,8 @@ builder.Services.AddScoped<IProjectDAServices, ProjectDAServices>();
 builder.Services.AddScoped<IProjectServices, ProjectServices>();
 builder.Services.AddScoped<ITaskDAServices, TaskDAServices>();
 builder.Services.AddScoped<ITaskServices, TaskServices>();
+builder.Services.AddScoped<IUserDAServices, UserDAServices>();
+builder.Services.AddScoped<IUserServices, UserServices>();
 
 builder.Services.AddControllers();
 

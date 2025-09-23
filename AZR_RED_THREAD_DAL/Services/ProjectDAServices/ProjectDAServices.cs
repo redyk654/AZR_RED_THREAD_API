@@ -37,6 +37,21 @@ namespace AZR_RED_THREAD_DAL.Services.ProjectDAServices
             return (projects, total);
         }
 
+        public async Task<(IEnumerable<Project> Projects, int Total)> GetPaginatedProjectsByUserAsync(int page, int pageSize, int userId)
+        {
+            var query = _context.Projects.Where(p => p.IsActive && p.CreatedBy == userId);
+
+            var total = await query.CountAsync();
+
+            var projects = await query
+                .OrderByDescending(p => p.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (projects, total);
+        }
+
         public async Task<Project?> GetProjectByIdAsync(int id)
         {
             return await _context.Projects
