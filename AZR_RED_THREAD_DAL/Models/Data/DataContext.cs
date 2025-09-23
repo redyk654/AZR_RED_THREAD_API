@@ -37,6 +37,23 @@ namespace AZR_RED_THREAD_DAL.Models.Data
         public DbSet<Project.Project> Projects { get; set; } // DbSet for Project entity
         public DbSet<State.State> States { get; set; } // DbSet for State entity
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Seed Roles
+            modelBuilder.Entity<Roles>().HasData(
+                new Roles { Id = 1, Label = "Admin", Description = "Administrateur", CreatedAt = new DateTime(2025, 01, 01), CreatedBy = 1, IsActive = true },
+                new Roles { Id = 2, Label = "User", Description = "Utilisateur", CreatedAt = new DateTime(2025, 01, 01), CreatedBy = 1, IsActive = true }
+            );
+
+            // Seed Users
+            modelBuilder.Entity<User>().HasData(
+                new User { Id = 1, FirstName = "System", LastName = "Seeder", Email = "seed@local", M365UUID = "seed-system-uuid", RoleId = 1, CreatedAt = new DateTime(2025, 01, 01), CreatedBy = 1, IsActive = true },
+                new User { Id = 2, FirstName = "Alice", LastName = "Dupont", Email = "alice@example.com", M365UUID = "alice-uuid", RoleId = 2, CreatedAt = new DateTime(2025, 01, 01), CreatedBy = 1, IsActive = true },
+                new User { Id = 3, FirstName = "Bob", LastName = "Martin", Email = "bob@example.com", M365UUID = "bob-uuid", RoleId = 2, CreatedAt = new DateTime(2025, 01, 01), CreatedBy = 1, IsActive = true }
+            );
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
