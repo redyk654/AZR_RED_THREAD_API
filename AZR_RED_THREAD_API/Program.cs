@@ -3,6 +3,8 @@ using AZR_RED_THREAD_BLL.Services.ProjectServices;
 using AZR_RED_THREAD_DAL.Models.Data;
 using AZR_RED_THREAD_DAL.Services;
 using AZR_RED_THREAD_DAL.Services.ProjectDAServices;
+using AZR_RED_THREAD_BLL.Services.TaskServices;
+using AZR_RED_THREAD_DAL.Services.TaskDAServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -23,10 +25,12 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 builder.Services.AddScoped<IDataContext>(provider => provider.GetRequiredService<DataContext>());
 
-builder.Services.AddAutoMapper(typeof(ProjectProfile));
+builder.Services.AddAutoMapper(typeof(ProjectProfile), typeof(TaskProfile));
 
 builder.Services.AddScoped<IProjectDAServices, ProjectDAServices>();
 builder.Services.AddScoped<IProjectServices, ProjectServices>();
+builder.Services.AddScoped<ITaskDAServices, TaskDAServices>();
+builder.Services.AddScoped<ITaskServices, TaskServices>();
 
 builder.Services.AddControllers();
 
