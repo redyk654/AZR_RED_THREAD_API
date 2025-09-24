@@ -44,5 +44,16 @@ namespace AZR_RED_THREAD_DAL.Services.UserDAServices
             await _context.SaveChangesAsync();
             return user;
         }
+
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            // Includes role navigation to allow RoleLabel access without additional queries
+            return await _context.Users
+                .Include(u => u.Role)
+                .Where(u => u.IsActive)
+                .OrderBy(u => u.LastName)
+                .ThenBy(u => u.FirstName)
+                .ToListAsync();
+        }
     }
 }

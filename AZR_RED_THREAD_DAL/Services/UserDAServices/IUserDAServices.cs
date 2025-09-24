@@ -12,7 +12,13 @@ namespace AZR_RED_THREAD_DAL.Services.UserDAServices
         Task<User?> GetByIdAsync(int id);
         Task<User?> GetByM365UUIDAsync(string m365uuid);
         Task<User?> GetByEmailAsync(string email);
-        Task<User> CreateUserAsync(User user);
+        // NEW: list all users (with Role navigation included)
+        Task<IEnumerable<User>> GetAllUsersAsync();
+
+        // NEW: update an existing user (persist changes)
         Task<User> UpdateUserAsync(User user);
+
+        // NEW: create (existing method already present in earlier code)
+        Task<User> CreateUserAsync(User user);
     }
 }

@@ -84,13 +84,13 @@ builder.Services.AddScoped<ITaskServices, TaskServices>();
 builder.Services.AddScoped<IUserDAServices, UserDAServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<IRoleDAServices, RoleDAServices>();
+builder.Services.AddScoped<IRoleServices, RoleServices>();
 builder.Services.AddScoped<IPrivilegeDAServices, PrivilegeDAServices>();
 builder.Services.AddScoped<IRolePrivilegeDAServices, RolePrivilegeDAServices>();
-builder.Services.AddScoped<IRoleServices, RoleServices>();
 builder.Services.AddScoped<IPrivilegeServices, PrivilegeServices>();
 
 // AutoMapper
-builder.Services.AddAutoMapper(typeof(ProjectProfile), typeof(TaskProfile), typeof(AccessProfile));
+builder.Services.AddAutoMapper(typeof(ProjectProfile), typeof(TaskProfile), typeof(AccessProfile), typeof(UserProfile));
 
 builder.Services.AddControllers();
 

@@ -1,6 +1,6 @@
 ﻿using AZR_RED_THREAD_BLL.DTOs.Access;
+using AZR_RED_THREAD_BLL.DTOs.UserDto;
 using AZR_RED_THREAD_BLL.Services.UserServices;
-using AZR_RED_THREAD_DAL.Services.UserDAServices;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -12,26 +12,28 @@ namespace AZR_RED_THREAD_API.Controllers
     [Route("api/[controller]")]
     public class AdminController : ControllerBase
     {
-        private readonly IUserDAServices _userDA;
-        public AdminController(AZR_RED_THREAD_DAL.Services.UserDAServices.IUserDAServices userDA)
+        private readonly IUserServices _userServices;
+        public AdminController(IUserServices userServices)
         {
-            _userDA = userDA;
+            _userServices = userServices;
+        }
+
+        // GET api/admin/users
+        [HttpGet("users")]
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
+        {
+            // In production: add authorization check (only admin)
+            var list = await _userServices.GetAllUsersAsync();
+            return Ok(list);
         }
 
         // POST api/admin/users/{userId}/role
         [HttpPost("users/{userId}/role")]
         public async Task<ActionResult> AssignRoleToUser(int userId, [FromBody] AssignRoleToUserDto dto)
         {
-            var user = await _userDA.GetByIdAsync(userId);
-            if (user == null) return NotFound("User not found");
-
-            // set role
-            user.RoleId = dto.RoleId;
-            user.UpdatedAt = System.DateTime.UtcNow;
-            user.UpdatedBy = ResolveUserIdOrFallback();
-
-            // persist - if you don't have UpdateUserAsync implement one in DAL (recommended)
-            await _userDA.CreateUserAsync(user); // ugly workaround: use UpdateUserAsync in DAL ideally
+            // optionally validate dto.UserId == userId
+            var performedBy = ResolveUserIdOrFallback();
+            await _userServices.AssignRoleToUserAsync(userId, dto.RoleId, performedBy);
             return NoContent();
         }
 
