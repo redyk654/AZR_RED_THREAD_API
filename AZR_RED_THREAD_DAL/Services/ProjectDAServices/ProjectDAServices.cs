@@ -39,7 +39,7 @@ namespace AZR_RED_THREAD_DAL.Services.ProjectDAServices
 
         public async Task<(IEnumerable<Project> Projects, int Total)> GetPaginatedProjectsByUserAsync(int page, int pageSize, int userId)
         {
-            var query = _context.Projects.Where(p => p.IsActive && p.CreatedBy == userId);
+            var query = _context.Projects.Where(p => p.IsActive);
 
             var total = await query.CountAsync();
 
