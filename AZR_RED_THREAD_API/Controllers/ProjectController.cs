@@ -216,33 +216,25 @@ namespace AZR_RED_THREAD_API.Controllers
 
         private async Task<(int? userId, bool isAdmin)> ResolveCurrentUserAsync()
         {
-            // try claim
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (int.TryParse(userIdClaim, out int uid))
-            {
-                var admin = await _userServices.IsUserAdminAsync(uid);
-                return (uid, admin);
-            }
+            // Try to extract azure 'oid' claim
+            var oid = User.FindFirst("oid")?.Value
+                      ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            // try fake header X-Fake-UserId
-            if (Request.Headers.TryGetValue("X-Fake-UserId", out var fakeIdHdr))
+            if (!string.IsNullOrWhiteSpace(oid))
             {
-                if (int.TryParse(fakeIdHdr.ToString(), out int fid))
-                {
-                    var admin = await _userServices.IsUserAdminAsync(fid);
-                    return (fid, admin);
-                }
-            }
-
-            // try fake m365uuid
-            if (Request.Headers.TryGetValue("X-Fake-M365UUID", out var uuidHdr))
-            {
-                var userDto = await _userServices.GetByM365UUIDAsync(uuidHdr);
+                var userDto = await _userServices.GetByM365UUIDAsync(oid);
                 if (userDto != null)
                 {
-                    var admin = await _userServices.IsUserAdminAsync(userDto.Id);
-                    return (userDto.Id, admin);
+                    var isAdmin = await _userServices.IsUserAdminAsync(userDto.Id);
+                    return (userDto.Id, isAdmin);
                 }
+            }
+
+            // As fallback for dev/test, check headers (only use in Development)
+            if (Request.Headers.TryGetValue("X-Fake-UserId", out var hv) && int.TryParse(hv.FirstOrDefault(), out var fakeId))
+            {
+                var isAdmin = await _userServices.IsUserAdminAsync(fakeId);
+                return (fakeId, isAdmin);
             }
 
             return (null, false);
