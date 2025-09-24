@@ -3,10 +3,13 @@ using AZR_RED_THREAD_BLL.Services.ProjectServices;
 using AZR_RED_THREAD_BLL.Services.TaskServices;
 using AZR_RED_THREAD_BLL.Services.UserServices;
 using AZR_RED_THREAD_DAL.Models.Data;
-using AZR_RED_THREAD_DAL.Services;
 using AZR_RED_THREAD_DAL.Services.ProjectDAServices;
 using AZR_RED_THREAD_DAL.Services.TaskDAServices;
 using AZR_RED_THREAD_DAL.Services.UserDAServices;
+using AZR_RED_THREAD_DAL.Services.RoleDAServices;
+using AZR_RED_THREAD_DAL.Services.PrivilegeDAServices;
+using AZR_RED_THREAD_DAL.Services.RolePrivilegeDAServices;
+using AZR_RED_THREAD_BLL.Services.Access;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Microsoft.Identity.Web;
@@ -73,7 +76,6 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 builder.Services.AddScoped<IDataContext>(provider => provider.GetRequiredService<DataContext>());
 
-builder.Services.AddAutoMapper(typeof(ProjectProfile), typeof(TaskProfile));
 
 builder.Services.AddScoped<IProjectDAServices, ProjectDAServices>();
 builder.Services.AddScoped<IProjectServices, ProjectServices>();
@@ -81,6 +83,14 @@ builder.Services.AddScoped<ITaskDAServices, TaskDAServices>();
 builder.Services.AddScoped<ITaskServices, TaskServices>();
 builder.Services.AddScoped<IUserDAServices, UserDAServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
+builder.Services.AddScoped<IRoleDAServices, RoleDAServices>();
+builder.Services.AddScoped<IPrivilegeDAServices, PrivilegeDAServices>();
+builder.Services.AddScoped<IRolePrivilegeDAServices, RolePrivilegeDAServices>();
+builder.Services.AddScoped<IRoleServices, RoleServices>();
+builder.Services.AddScoped<IPrivilegeServices, PrivilegeServices>();
+
+// AutoMapper
+builder.Services.AddAutoMapper(typeof(ProjectProfile), typeof(TaskProfile), typeof(AccessProfile));
 
 builder.Services.AddControllers();
 

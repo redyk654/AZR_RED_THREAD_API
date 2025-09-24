@@ -85,7 +85,7 @@ namespace AZR_RED_THREAD_BLL.Services.UserServices
             var (firstName, lastName) = SplitName(displayName);
 
             // find role, or create default role
-            var role = await _roleDA.GetByLabelAsync(DefaultRoleLabel);
+            var role = await _roleDA.GetRoleByLabelAsync(DefaultRoleLabel);
             if (role == null)
             {
                 role = new Roles
@@ -99,7 +99,7 @@ namespace AZR_RED_THREAD_BLL.Services.UserServices
                 role = await _roleDA.CreateRoleAsync(role);
             }
 
-            var newUser = new AZR_RED_THREAD_DAL.Models.AccessAndPrivileges.Users.User
+            var newUser = new User
             {
                 FirstName = firstName,
                 LastName = string.IsNullOrWhiteSpace(lastName) ? (lastName ?? "Unknown") : lastName,

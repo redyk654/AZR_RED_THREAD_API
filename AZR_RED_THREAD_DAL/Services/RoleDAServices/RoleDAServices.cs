@@ -1,23 +1,30 @@
-﻿using AZR_RED_THREAD_DAL.Models.AccessAndPrivileges;
-using AZR_RED_THREAD_DAL.Models.Data;
+﻿using AZR_RED_THREAD_DAL.Models.Data;
+using AZR_RED_THREAD_DAL.Models.AccessAndPrivileges;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace AZR_RED_THREAD_DAL.Services.RoleDAServices
 {
     public class RoleDAServices : IRoleDAServices
     {
         private readonly IDataContext _context;
+        public RoleDAServices(IDataContext context) { _context = context; }
 
-        public RoleDAServices(IDataContext context)
+        public async Task<IEnumerable<Roles>> GetAllRolesAsync()
         {
-            _context = context;
+            return await _context.Roles.Where(r => r.IsActive).OrderBy(r => r.Label).ToListAsync();
         }
 
-        public async Task<Roles?> GetByLabelAsync(string label)
+        public async Task<Roles?> GetRoleByLabelAsync(string label)
         {
-            if (string.IsNullOrWhiteSpace(label)) return null;
-            return await _context.Roles.FirstOrDefaultAsync(r => r.IsActive && r.Label.ToLower() == label.ToLower());
+            return await _context.Roles.FirstOrDefaultAsync(r => r.Label == label && r.IsActive);
+        }
+
+        public async Task<Roles?> GetRoleByIdAsync(int id)
+        {
+            return await _context.Roles.FirstOrDefaultAsync(r => r.Id == id && r.IsActive);
         }
 
         public async Task<Roles> CreateRoleAsync(Roles role)
@@ -25,6 +32,22 @@ namespace AZR_RED_THREAD_DAL.Services.RoleDAServices
             _context.Roles.Add(role);
             await _context.SaveChangesAsync();
             return role;
+        }
+
+        public async Task<Roles> UpdateRoleAsync(Roles role)
+        {
+            _context.Roles.Update(role);
+            await _context.SaveChangesAsync();
+            return role;
+        }
+
+        public async Task<bool> DeleteRoleAsync(int id)
+        {
+            var role = await GetRoleByIdAsync(id);
+            if (role == null) return false;
+            role.IsActive = false;
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

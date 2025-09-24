@@ -27,11 +27,11 @@ namespace AZR_RED_THREAD_DAL.Models.Data
 
         public DataContext() : base(new DbContextOptions<DataContext>()) { }
 
-        public DbSet<User> Users { get; set; } // DbSet for User entity
         public DbSet<Roles> Roles { get; set; } // DbSet for Roles entity
-        public DbSet<UserTask> UserTasks { get; set; } // DbSet for UserTask entity
-        public DbSet<RolePrivilege> RolePrivileges { get; set; } // DbSet for RolePrivilege entity
         public DbSet<Privilege> Privileges { get; set; } // DbSet for Privilege entity
+        public DbSet<RolePrivilege> RolePrivileges { get; set; } // DbSet for RolePrivilege entity
+        public DbSet<User> Users { get; set; } // DbSet for User entity
+        public DbSet<UserTask> UserTasks { get; set; } // DbSet for UserTask entity
         public DbSet<Task.Task> Tasks { get; set; } // DbSet for Task entity
         public DbSet<Document.Document> Documents { get; set; } // DbSet for Document entity
         public DbSet<Project.Project> Projects { get; set; } // DbSet for Project entity
@@ -41,17 +41,58 @@ namespace AZR_RED_THREAD_DAL.Models.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Configure relationships
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Role)
+                .WithMany()
+                .HasForeignKey(u => u.RoleId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<RolePrivilege>()
+                .HasOne(rp => rp.Role)
+                .WithMany()
+                .HasForeignKey(rp => rp.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<RolePrivilege>()
+                .HasOne(rp => rp.Privilege)
+                .WithMany()
+                .HasForeignKey(rp => rp.PrivilegeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Static timestamp for seeding
+            var now = new DateTime(2025, 01, 01, 10, 00, 00, DateTimeKind.Utc);
+
             // Seed Roles
             modelBuilder.Entity<Roles>().HasData(
-                new Roles { Id = 1, Label = "Admin", Description = "Administrateur", CreatedAt = new DateTime(2025, 01, 01), CreatedBy = 1, IsActive = true },
-                new Roles { Id = 2, Label = "User", Description = "Utilisateur", CreatedAt = new DateTime(2025, 01, 01), CreatedBy = 1, IsActive = true }
+                new Roles { Id = 1, Label = "Admin", Description = "Administrateur système", CreatedAt = now, CreatedBy = 1, IsActive = true },
+                new Roles { Id = 2, Label = "Owner", Description = "Propriétaire (peut gérer ses projets)", CreatedAt = now, CreatedBy = 1, IsActive = true },
+                new Roles { Id = 3, Label = "User", Description = "Utilisateur standard", CreatedAt = now, CreatedBy = 1, IsActive = true }
             );
 
-            // Seed Users
+            // Seed Privileges
+            modelBuilder.Entity<Privilege>().HasData(
+                new Privilege { Id = 1, Label = "Project.Create", Description = "Créer des projets", CreatedAt = now, CreatedBy = 1, IsActive = true },
+                new Privilege { Id = 2, Label = "Project.Edit", Description = "Modifier des projets", CreatedAt = now, CreatedBy = 1, IsActive = true },
+                new Privilege { Id = 3, Label = "Project.Delete", Description = "Supprimer des projets", CreatedAt = now, CreatedBy = 1, IsActive = true },
+                new Privilege { Id = 4, Label = "User.ManageRoles", Description = "Gérer rôles et privilèges", CreatedAt = now, CreatedBy = 1, IsActive = true }
+            );
+
+            // Seed RolePrivileges (after Roles and Privileges)
+            modelBuilder.Entity<RolePrivilege>().HasData(
+                new RolePrivilege { Id = 1, RoleId = 1, PrivilegeId = 1, CreatedAt = now, CreatedBy = 1, IsActive = true },
+                new RolePrivilege { Id = 2, RoleId = 1, PrivilegeId = 2, CreatedAt = now, CreatedBy = 1, IsActive = true },
+                new RolePrivilege { Id = 3, RoleId = 1, PrivilegeId = 3, CreatedAt = now, CreatedBy = 1, IsActive = true },
+                new RolePrivilege { Id = 4, RoleId = 1, PrivilegeId = 4, CreatedAt = now, CreatedBy = 1, IsActive = true },
+                new RolePrivilege { Id = 5, RoleId = 2, PrivilegeId = 1, CreatedAt = now, CreatedBy = 1, IsActive = true },
+                new RolePrivilege { Id = 6, RoleId = 2, PrivilegeId = 2, CreatedAt = now, CreatedBy = 1, IsActive = true }
+            );
+
+            // Seed Users (after Roles)
             modelBuilder.Entity<User>().HasData(
-                new User { Id = 1, FirstName = "System", LastName = "Seeder", Email = "seed@local", M365UUID = "seed-system-uuid", RoleId = 1, CreatedAt = new DateTime(2025, 01, 01), CreatedBy = 1, IsActive = true },
-                new User { Id = 2, FirstName = "Alice", LastName = "Dupont", Email = "alice@example.com", M365UUID = "alice-uuid", RoleId = 2, CreatedAt = new DateTime(2025, 01, 01), CreatedBy = 1, IsActive = true },
-                new User { Id = 3, FirstName = "Bob", LastName = "Martin", Email = "bob@example.com", M365UUID = "bob-uuid", RoleId = 2, CreatedAt = new DateTime(2025, 01, 01), CreatedBy = 1, IsActive = true }
+                new User { Id = 1, FirstName = "System", LastName = "Seeder", Email = "seed@local", M365UUID = "seed-system-uuid", RoleId = 1, CreatedAt = now, CreatedBy = 1, IsActive = true },
+                new User { Id = 2, FirstName = "Alice", LastName = "Dupont", Email = "alice@example.com", M365UUID = "alice-uuid", RoleId = 3, CreatedAt = now, CreatedBy = 1, IsActive = true },
+                new User { Id = 3, FirstName = "Bob", LastName = "Martin", Email = "bob@example.com", M365UUID = "bob-uuid", RoleId = 2, CreatedAt = now, CreatedBy = 1, IsActive = true }
             );
         }
 
