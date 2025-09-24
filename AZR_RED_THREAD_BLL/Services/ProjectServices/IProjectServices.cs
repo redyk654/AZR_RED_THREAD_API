@@ -13,10 +13,11 @@ namespace AZR_RED_THREAD_BLL.Services.ProjectServices
     public interface IProjectServices
     {
         Task<IEnumerable<ProjectDto>> GetAllProjectsAsync();
-        Task<PaginatedResult<ProjectDto>> GetPaginatedProjectsAsync(int page, int pageSize);
+        Task<(IEnumerable<ProjectDto> Data, int Total)> GetPaginatedProjectsAsync(int page, int pageSize, int? currentUserId = null, bool isAdmin = false);
         Task<ProjectDto?> GetProjectByIdAsync(int id);
-        Task<ProjectDto> CreateProjectAsync(CreateProjectDto createProjectDto);
-        Task<ProjectDto> UpdateProjectAsync(UpdateProjectDto updateProjectDto);
-        Task<bool> DeleteProjectAsync(int id);
+        Task<ProjectDto> UpdateProjectAsync(UpdateProjectDto dto, int currentUserId, bool isAdmin);
+        Task<ProjectDto> CreateProjectAsync(CreateProjectDto dto); // Creation uses dto.CreatedBy
+        Task<bool> DeleteProjectAsync(int id, int currentUserId, bool isAdmin);
+
     }
 }
