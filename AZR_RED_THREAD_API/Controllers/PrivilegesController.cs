@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace AZR_RED_THREAD_API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/admin/[controller]")]
     public class PrivilegesController : ControllerBase
     {
         private readonly IPrivilegeServices _privServices;
@@ -16,10 +16,11 @@ namespace AZR_RED_THREAD_API.Controllers
         {
             _privServices = privServices;
         }
-
+        // GET api/admin/privileges
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PrivilegeDto>>> GetAll() => Ok(await _privServices.GetAllPrivilegesAsync());
 
+        // GET api/admin/privileges/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<PrivilegeDto>> GetById(int id)
         {
@@ -28,6 +29,7 @@ namespace AZR_RED_THREAD_API.Controllers
             return Ok(p);
         }
 
+        // POST api/admin/privileges
         [HttpPost]
         public async Task<ActionResult<PrivilegeDto>> Create([FromBody] PrivilegeDto dto)
         {
@@ -36,6 +38,7 @@ namespace AZR_RED_THREAD_API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
+        // PUT api/admin/privileges/{id}
         [HttpPut("{id}")]
         public async Task<ActionResult<PrivilegeDto>> Update(int id, [FromBody] PrivilegeDto dto)
         {
@@ -45,6 +48,7 @@ namespace AZR_RED_THREAD_API.Controllers
             return Ok(updated);
         }
 
+        // DELETE api/admin/privileges/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {

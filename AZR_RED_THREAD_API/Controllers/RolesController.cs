@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace AZR_RED_THREAD_API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/admin/[controller]")]
     public class RolesController : ControllerBase
     {
         private readonly IRoleServices _roleServices;
@@ -18,14 +18,14 @@ namespace AZR_RED_THREAD_API.Controllers
             _roleServices = roleServices;
         }
 
-        // GET api/roles
+        // GET api/admin/roles
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RoleDto>>> GetAll()
         {
             return Ok(await _roleServices.GetAllRolesAsync());
         }
 
-        // GET api/roles/{id}
+        // GET api/admin/roles/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<RoleDto>> GetById(int id)
         {
@@ -34,7 +34,7 @@ namespace AZR_RED_THREAD_API.Controllers
             return Ok(r);
         }
 
-        // POST api/roles
+        // POST api/admin/roles
         [HttpPost]
         public async Task<ActionResult<RoleDto>> Create([FromBody] CreateRoleDto dto)
         {
@@ -44,7 +44,7 @@ namespace AZR_RED_THREAD_API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
-        // PUT api/roles/{id}
+        // PUT api/admin/roles/{id}
         [HttpPut("{id}")]
         public async Task<ActionResult<RoleDto>> Update(int id, [FromBody] UpdateRoleDto dto)
         {
@@ -54,7 +54,7 @@ namespace AZR_RED_THREAD_API.Controllers
             return Ok(updated);
         }
 
-        // DELETE api/roles/{id}
+        // DELETE api/admin/roles/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
@@ -63,24 +63,24 @@ namespace AZR_RED_THREAD_API.Controllers
             return r ? NoContent() : NotFound();
         }
 
-        // GET api/roles/{id}/privileges
+        // GET api/admin/roles/{id}/privileges
         [HttpGet("{id}/privileges")]
         public async Task<ActionResult<IEnumerable<PrivilegeDto>>> GetRolePrivileges(int id)
         {
             return Ok(await _roleServices.GetPrivilegesForRoleAsync(id));
         }
 
-        // POST api/roles/{id}/privileges
-        [HttpPost("{id}/privileges")]
-        public async Task<ActionResult> AddPrivilegeToRole(int id, [FromBody] int privilegeId)
+        // POST api/admin/roles/{id}/assign-privilege
+        [HttpPost("{id}/assign-privilege/{privilegeId}")]
+        public async Task<ActionResult> AddPrivilegeToRole(int id, int privilegeId)
         {
             var userId = ResolveUserIdOrFallback();
             await _roleServices.AddPrivilegeToRoleAsync(id, privilegeId, userId);
             return NoContent();
         }
 
-        // DELETE api/roles/{id}/privileges/{privilegeId}
-        [HttpDelete("{id}/privileges/{privilegeId}")]
+        // DELETE api/admin/roles/{id}/remove-privilege/{privilegeId}
+        [HttpDelete("{id}/remove-privilege/{privilegeId}")]
         public async Task<ActionResult> RemovePrivilege(int id, int privilegeId)
         {
             var userId = ResolveUserIdOrFallback();
