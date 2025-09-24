@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace AZR_RED_THREAD_DAL.Migrations
 {
     /// <inheritdoc />
@@ -174,7 +176,7 @@ namespace AZR_RED_THREAD_DAL.Migrations
                         column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -238,6 +240,50 @@ namespace AZR_RED_THREAD_DAL.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Privileges",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "IsActive", "Label", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc), 1, "Créer des projets", true, "Project.Create", null, null },
+                    { 2, new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc), 1, "Modifier des projets", true, "Project.Edit", null, null },
+                    { 3, new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc), 1, "Supprimer des projets", true, "Project.Delete", null, null },
+                    { 4, new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc), 1, "Gérer rôles et privilèges", true, "User.ManageRoles", null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Description", "IsActive", "Label", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc), 1, "Administrateur système", true, "Admin", null, null },
+                    { 2, new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc), 1, "Propriétaire (peut gérer ses projets)", true, "Owner", null, null },
+                    { 3, new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc), 1, "Utilisateur standard", true, "User", null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "RolePrivileges",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "IsActive", "PrivilegeId", "RoleId", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc), 1, true, 1, 1, null, null },
+                    { 2, new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc), 1, true, 2, 1, null, null },
+                    { 3, new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc), 1, true, 3, 1, null, null },
+                    { 4, new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc), 1, true, 4, 1, null, null },
+                    { 5, new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc), 1, true, 1, 2, null, null },
+                    { 6, new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc), 1, true, 2, 2, null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "Email", "FirstName", "IsActive", "LastName", "M365UUID", "RoleId", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc), 1, "seed@local", "System", true, "Seeder", "seed-system-uuid", 1, null, null },
+                    { 2, new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc), 1, "alice@example.com", "Alice", true, "Dupont", "alice-uuid", 3, null, null },
+                    { 3, new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc), 1, "bob@example.com", "Bob", true, "Martin", "bob-uuid", 2, null, null }
                 });
 
             migrationBuilder.CreateIndex(

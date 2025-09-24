@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AZR_RED_THREAD_DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250919083200_InitialCreate")]
+    [Migration("20250924133108_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -59,6 +59,44 @@ namespace AZR_RED_THREAD_DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Privileges");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedBy = 1,
+                            Description = "Créer des projets",
+                            IsActive = true,
+                            Label = "Project.Create"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedBy = 1,
+                            Description = "Modifier des projets",
+                            IsActive = true,
+                            Label = "Project.Edit"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedBy = 1,
+                            Description = "Supprimer des projets",
+                            IsActive = true,
+                            Label = "Project.Delete"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedBy = 1,
+                            Description = "Gérer rôles et privilèges",
+                            IsActive = true,
+                            Label = "User.ManageRoles"
+                        });
                 });
 
             modelBuilder.Entity("AZR_RED_THREAD_DAL.Models.AccessAndPrivileges.RolePrivilege", b =>
@@ -97,6 +135,62 @@ namespace AZR_RED_THREAD_DAL.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("RolePrivileges");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedBy = 1,
+                            IsActive = true,
+                            PrivilegeId = 1,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedBy = 1,
+                            IsActive = true,
+                            PrivilegeId = 2,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedBy = 1,
+                            IsActive = true,
+                            PrivilegeId = 3,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedBy = 1,
+                            IsActive = true,
+                            PrivilegeId = 4,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedBy = 1,
+                            IsActive = true,
+                            PrivilegeId = 1,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedBy = 1,
+                            IsActive = true,
+                            PrivilegeId = 2,
+                            RoleId = 2
+                        });
                 });
 
             modelBuilder.Entity("AZR_RED_THREAD_DAL.Models.AccessAndPrivileges.Roles", b =>
@@ -132,6 +226,35 @@ namespace AZR_RED_THREAD_DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedBy = 1,
+                            Description = "Administrateur système",
+                            IsActive = true,
+                            Label = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedBy = 1,
+                            Description = "Propriétaire (peut gérer ses projets)",
+                            IsActive = true,
+                            Label = "Owner"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedBy = 1,
+                            Description = "Utilisateur standard",
+                            IsActive = true,
+                            Label = "User"
+                        });
                 });
 
             modelBuilder.Entity("AZR_RED_THREAD_DAL.Models.AccessAndPrivileges.Users.User", b =>
@@ -179,6 +302,44 @@ namespace AZR_RED_THREAD_DAL.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedBy = 1,
+                            Email = "seed@local",
+                            FirstName = "System",
+                            IsActive = true,
+                            LastName = "Seeder",
+                            M365UUID = "seed-system-uuid",
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedBy = 1,
+                            Email = "alice@example.com",
+                            FirstName = "Alice",
+                            IsActive = true,
+                            LastName = "Dupont",
+                            M365UUID = "alice-uuid",
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2025, 1, 1, 10, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedBy = 1,
+                            Email = "bob@example.com",
+                            FirstName = "Bob",
+                            IsActive = true,
+                            LastName = "Martin",
+                            M365UUID = "bob-uuid",
+                            RoleId = 2
+                        });
                 });
 
             modelBuilder.Entity("AZR_RED_THREAD_DAL.Models.Document.Document", b =>
@@ -414,7 +575,7 @@ namespace AZR_RED_THREAD_DAL.Migrations
                     b.HasOne("AZR_RED_THREAD_DAL.Models.AccessAndPrivileges.Roles", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Role");
